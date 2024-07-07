@@ -1,0 +1,470 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.56/pdfmake.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.56/vfs_fonts.js"></script>
+    <title>Driver Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .menu {
+            background-color: #007bff;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .menu a {
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .menu a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <a onclick="showSection('addProfile')">Add Profile</a>
+    <a onclick="showSection('dailyRecords')">Daily Records</a>
+    <a onclick="showSection('archive')">Archive</a>
+</div>
+
+<div id="addProfile" class="container">
+    <h1>Show Price Company</h1>
+    <h2>Add New Driver Profile</h2>
+    <form id="profileForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Name">
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="text" id="age" placeholder="Age">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone No:</label>
+            <input type="text" id="phone" placeholder="Phone No">
+        </div>
+        <div class="form-group">
+            <label for="car">Car - Model:</label>
+            <input type="text" id="car" placeholder="Car - Model">
+        </div>
+        <div class="form-group">
+            <label for="market">Market:</label>
+            <select id="market">
+                <option value="">Market</option>
+                <option value="Naz Naz">Naz Naz</option>
+                <option value="Kasnazan">Kasnazan</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" id="address" placeholder="Address">
+        </div>
+        <div class="form-group">
+            <label for="shift">Shift:</label>
+            <select id="shift">
+                <option value="">Shift</option>
+                <option value="8-4">8-4</option>
+                <option value="4-12">4-12</option>
+                <option value="12-8">12-8</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="workMethod">Work Method:</label>
+            <select id="workMethod">
+                <option value="">Select Work Method</option>
+                <option value="salaryAndPerDelivery">Salary + 2000 IQD per Delivery</option>
+                <option value="perDeliveryOnly">3000 IQD per Delivery</option>
+            </select>
+        </div>
+        <button type="button" onclick="addProfile()">Add Profile</button>
+    </form>
+    <div id="profileList"></div>
+</div>
+
+<div id="dailyRecords" class="container hidden">
+    <h1>Daily Records</h1>
+    <form id="dailyRecordsForm">
+        <div class="form-group">
+            <label for="driverName">Driver Name:</label>
+            <input type="text" id="driverName" placeholder="Driver Name">
+        </div>
+        <div class="form-group">
+            <label for="orderCount">Order Count:</label>
+            <input type="number" id="orderCount" placeholder="Order Count">
+        </div>
+        <div class="form-group">
+            <label for="recordDate">Date:</label>
+            <input type="date" id="recordDate">
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" rows="4" placeholder="Notes"></textarea>
+        </div>
+        <button type="button" onclick="saveDailyRecord()">Save Daily Record</button>
+    </form>
+    <div id="dailyRecordsList"></div>
+</div>
+
+<div id="archive" class="container hidden">
+    <h1>Archive</h1>
+    <div id="driverProfiles">
+        <h2>Driver Profiles</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Phone No</th>
+                <th>Car - Model</th>
+                <th>Market</th>
+                <th>Address</th>
+                <th>Shift</th>
+                <th>Work Method</th>
+            </tr>
+            <!-- Driver profiles will be displayed here -->
+        </table>
+    </div>
+<div id="driverBalances">
+        <h2>Driver Balances</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Balance</th>
+            </tr>
+            <!-- Driver balances will be displayed here -->
+        </table>
+    </div>
+    <form id="archiveForm">
+        <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+        </div>
+        <button type="button" onclick="generateReport()">Generate Report</button>
+    </form>
+    <div id="report"></div>
+</div>
+
+<div class="footer">
+    © 2024 Show Price Company. All rights reserved.
+    <br>
+    System by Ammar
+</div>
+
+<script>
+    let profiles = [];
+    let dailyRecords = [];
+
+    function showSection(sectionId) {
+        document.getElementById('addProfile').classList.add('hidden');
+        document.getElementById('dailyRecords').classList.add('hidden');
+        document.getElementById('archive').classList.add('hidden');
+        document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    function addProfile() {
+        let name = document.getElementById('name').value;
+        let age = document.getElementById('age').value;
+        let phone = document.getElementById('phone').value;
+        let car = document.getElementById('car').value;
+        let market = document.getElementById('market').value;
+        let address = document.getElementById('address').value;
+        let shift = document.getElementById('shift').value;
+        let workMethod = document.getElementById('workMethod').value;
+
+        let profile = {
+            name: name,
+            age: age,
+            phone: phone,
+            car: car,
+            market: market,
+            address: address,
+            shift: shift,
+            workMethod: workMethod
+        };
+
+        profiles.push(profile);
+        displayProfiles();
+    }
+
+    function displayProfiles() {
+        let table = "<h2>Driver Profiles</h2><table><tr><th>Name</th><th>Age</th><th>Phone No</th><th>Car - Model</th><th>Market</th><th>Address</th><th>Shift</th><th>Work Method</th><th>Action</th></tr>";
+
+        profiles.forEach((profile, index) => {
+            table += "<tr>";
+            table += "<td>" + profile.name + "</td>";
+            table += "<td>" + profile.age + "</td>";
+            table += "<td>" + profile.phone + "</td>";
+            table += "<td>" + profile.car + "</td>";
+            table += "<td>" + profile.market + "</td>";
+            table += "<td>" + profile.address + "</td>";
+            table += "<td>" + profile.shift + "</td>";
+            table += "<td>" + profile.workMethod + "</td>";
+            table += "<td><button onclick='deleteProfile(" + index + ")'>Delete</button></td>";
+            table += "</tr>";
+        });
+
+        table += "</table>";
+
+        document.getElementById('profileList').innerHTML = table;
+    }
+
+    function deleteProfile(index) {
+        profiles.splice(index, 1);
+        displayProfiles();
+    }
+
+    function saveDailyRecord() {
+        let driverName = document.getElementById('driverName').value;
+        let orderCount = document.getElementById('orderCount').value;
+        let recordDate = document.getElementById('recordDate').value;
+        let notes = document.getElementById('notes').value;
+
+        let record = {
+            driverName: driverName,
+            orderCount: orderCount,
+            recordDate: recordDate,
+            notes: notes
+        };
+
+        dailyRecords.push(record);
+        displayDailyRecords();
+    }
+
+    function displayDailyRecords() {
+        let table = "<h2>Daily Records</h2><table><tr><th>Driver Name</th><th>Order Count</th><th>Date</th><th>Notes</th><th>Total Earnings</th></tr>";
+
+        dailyRecords.forEach(record => {
+            table += "<tr>";
+            table += "<td>" + record.driverName + "</td>";
+            table += "<td>" + record.orderCount + "</td>";
+            table += "<td>" + record.recordDate + "</td>";
+            table += "<td>" + record.notes + "</td>";
+
+            // Calculate total earnings based on work method
+            let profile = profiles.find(p => p.name === record.driverName);
+            let totalEarnings = 0;
+            if (profile) {
+                if (profile.workMethod === 'salaryAndPerDelivery') {
+                    totalEarnings = record.orderCount * 2000;
+                } else if (profile.workMethod === 'perDeliveryOnly') {
+                    totalEarnings = record.orderCount * 3000;
+                }
+            }
+            table += "<td>" + totalEarnings + " IQD</td>";
+
+            table += "</tr>";
+        });
+
+        table += "</table>";
+
+        document.getElementById('dailyRecordsList').innerHTML = table;
+    }
+
+    function generateReport() {
+        let startDate = document.getElementById('startDate').value;
+        let endDate = document.getElementById('endDate').value;
+
+        let filteredRecords = dailyRecords.filter(record => {
+            return record.recordDate >= startDate && record.recordDate <= endDate;
+        });
+
+        let report = "<h2>Report from " + startDate + " to " + endDate + "</h2>";
+        report += "<p>Total Drivers Registered: " + profiles.length + "</p>";
+        report += "<p>Total Daily Records: " + dailyRecords.length + "</p>";
+        report += "<h3>Daily Records</h3>";
+        report += "<table><tr><th>Driver Name</th><th>Order Count</th><th>Date</th><th>Notes</th><th>Total Earnings</th></tr>";
+
+        filteredRecords.forEach(record => {
+            report += "<tr>";
+            report += "<td>" + record.driverName + "</td>";
+            report+= "<td>" + record.orderCount + "</td>";
+            report += "<td>" + record.recordDate + "</td>";
+            report += "<td>" + record.notes + "</td>";
+
+            let profile = profiles.find(p => p.name === record.driverName);
+            let totalEarnings = 0;
+            if (profile) {
+                if (profile.workMethod === 'salaryAndPerDelivery') {
+                    totalEarnings = record.orderCount * 2000;
+                } else if (profile.workMethod === 'perDeliveryOnly') {
+                    totalEarnings = record.orderCount * 3000;
+                }
+            }
+            report += "<td>" + totalEarnings + " IQD</td>";
+
+            report += "</tr>";
+        });
+
+        report += "</table>";
+
+        document.getElementById('report').innerHTML = report;
+    }
+
+    // Driver balances calculation function
+    function calculateDriverBalances() {
+        let driverBalances = {};
+
+        dailyRecords.forEach(record => {
+            let profile = profiles.find(p => p.name === record.driverName);
+            let totalEarnings = 0;
+            if (profile) {
+                if (profile.workMethod === 'salaryAndPerDelivery') {
+                    totalEarnings = record.orderCount * 2000;
+                } else if (profile.workMethod === 'perDeliveryOnly') {
+                    totalEarnings = record.orderCount * 3000;
+                }
+            }
+            if (!driverBalances[record.driverName]) {
+                driverBalances[record.driverName] = totalEarnings;
+            } else {
+                driverBalances[record.driverName] += totalEarnings;
+            }
+        });
+
+        return driverBalances;
+    }
+
+    // Display driver balances
+    function displayDriverBalances() {
+        let driverBalances = calculateDriverBalances();
+        let table = "<h2>Driver Balances</h2><table><tr><th>Name</th><th>Balance</th></tr>";
+
+        Object.keys(driverBalances).forEach(driverName => {
+            table += "<tr>";
+            table += "<td>" + driverName + "</td>";
+            table += "<td>" + driverBalances[driverName] + " IQD</td>";
+            table += "</tr>";
+        });
+
+        table += "</table>";
+
+        document.getElementById('driverBalances').innerHTML = table;
+    }
+
+    // Update driver profiles and balances display
+    function updateArchive() {
+        displayProfiles();
+        displayDriverBalances();
+    }
+
+    // Initial update
+    updateArchive();
+
+    // Reload the archive section whenever navigating to it
+    document.getElementById('archive').addEventListener('click', function () {
+        updateArchive();
+    });
+
+</script>
+ <script type="text/javascript">
+            function downloadPdf() {
+                var docDefinition = {
+                    content: [
+                        
+                        {text:"hellow test testr" }
+                    ],
+                    defaultStyle: {
+                    }
+                };
+                pdfMake.createPdf(docDefinition).print();
+            }
+        </script>
+        <button onclick="downloadPdf()">Print pdf</button>
+
+</body>
+</html>
